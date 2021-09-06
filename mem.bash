@@ -34,16 +34,16 @@ function getRealPassword() {
 }
 
 function testPassword() {
-    if [[ "$(readPassword)" -eq "$(getRealPassword)" ]]; then
+    if [[ "$(readPassword)" == "$(getRealPassword)" ]]; then
         echo "GOOD!"
         timesGood=$((timesGood + 1))
     else
         echo "FAIL!"
-        timesBad=$((timesbad + 1))
+        timesBad=$((timesBad + 1))
     fi
 }
 
-[[ ! $# -eq 2 ]] && dieUsage
+[[ ! (  $# -eq 1 ) ]] && dieUsage
 
 case "$1" in
     help|-h|--help) printUsage; exit 0;;
@@ -51,23 +51,24 @@ case "$1" in
     --) shift; [[ ! $# -eq 2 ]] && dieUsage;;
 esac
 
-timesGood=0
-timesBad=0
-passFile="$1"
+timesGood=1
+timesBad=1
+passFile="${1%/}"
+passFile="$PREFIX/$passFile.gpg"
 
-while 1; do
+while true; do
     testPassword
     echo "--------------------------------------------"
     echo "Stats:"
-    echo "Good = $timesGood"
-    echo "Bad = $timesBad"
+    echo "Good = $((timesGood -  1))"
+    echo "Bad = $((timesBad - 1))"
     ratio=$((timesGood / timesBad))
-    echo "Ratio = $rato"
+    echo "Ratio = $ratio"
     read -p "Continue?[Y/n]" result
     [[ "$result" -eq "n" ]] && break
 done
 
 ratio=$((timesGood / timesBad))
-echo "FINAL RATIO = $rato"
+echo "FINAL RATIO = $ratio"
 echo "Not bad."
 

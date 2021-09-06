@@ -1,0 +1,9 @@
+
+PASSWORD_STORE_EXTENSION_COMMANDS+=(mem)
+
+__password_store_extension_complete_mem() {
+    COMPREPLY+=($(compgen -W "-o --option" -- ${cur}))
+    _pass_complete_entries 1
+}
+
+
